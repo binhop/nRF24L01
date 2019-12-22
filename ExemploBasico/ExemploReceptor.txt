@@ -1,0 +1,34 @@
+#include "RF24L01.h"
+
+uint16_t cont = 0;
+
+uint8_t buff_rx[32];
+
+void setup() {
+  uint8_t chave[5] = "chave";
+  
+  Serial.begin(9600);
+
+  // Inicializa o rádio com a chave de comunicação
+  if(RF24L01_Begin(chave))
+  {
+    Serial.println("Tudo certo");
+  }
+
+  // Prepara para receber mensagens
+  RF24L01_Start_Listen();
+}
+
+void loop()
+{
+  if(RF24L01_Available())
+  {
+    RF24L01_Receive(buff_rx, sizeof(buff_rx));
+    Serial.print("Recebeu: ");
+    for(uint8_t i=0; i<sizeof(buff_rx); i++)
+    {
+      Serial.write(buff_rx[i]);
+    }
+    Serial.println("");
+  }
+}

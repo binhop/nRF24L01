@@ -1,0 +1,32 @@
+#include "RF24L01.h"
+
+uint16_t cont = 0;
+
+void setup() {
+  uint8_t chave[5] = "chave";
+  
+  Serial.begin(9600);
+
+  // Inicializa o rádio com a chave de comunicação
+  if(RF24L01_Begin(chave))
+  {
+    Serial.println("Tudo certo");
+  }
+
+  // Interrompe o recebimento de dados para transmitir
+  RF24L01_Stop_Listen();
+}
+
+void loop() {
+  uint8_t text[32] = "Testando mensagem longa 000";
+
+  text[24] = (cont/100) + 48;
+  text[25] = (cont%100)/10 + 48;
+  text[26] = (cont%100)%10 + 48; 
+  cont+=1;
+  
+  RF24L01_Send(text, sizeof(text));
+  Serial.println("Enviou");
+
+  delay(1000); 
+}
